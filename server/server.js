@@ -25,19 +25,23 @@ const userSocketMap = new Map();
 
 const io = new Server(httpServer, {
     cors: {
-        origin: "http://localhost:5173",
+        origin: [
+            "https://bite-circle-cooking-community-platf.vercel.app", // <-- no trailing slash
+            "http://localhost:5173"
+        ],
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
     },
 });
 
 app.use(express.json());
-app.use(
-    cors({
-        origin: "http://localhost:5173",
-        credentials: true,
-    })
-);
+app.use(cors({
+  origin: [
+    'https://bite-circle-cooking-community-platf.vercel.app', // <-- add your deployed frontend URL here
+    'http://localhost:5173' // (optional) for local dev
+  ],
+  credentials: true
+}));
 
 app.use((req, res, next) => {
     req.io = io;
