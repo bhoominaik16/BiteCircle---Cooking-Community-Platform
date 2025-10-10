@@ -1,30 +1,40 @@
-import { defineConfig } from 'vite'
+/* eslint-env node, browser */
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import { API_BASE_URL } from '../utils/config';
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  esbuild: {
-    loader: 'jsx',
-    include: /src\/.*\.jsx?$/,
-    exclude: [],
-  },
-  server: {
-    proxy: {
-      '/api': {
-        target: `${API_BASE_URL}`,
-        changeOrigin: true,
-      }
-    }
-  },
-  // NEW: Add this block to fix the dependency pre-bundling error
-  optimizeDeps: {
-    esbuildOptions: {
-      loader: {
-        '.js': 'jsx' // Ensure .js files in node_modules are treated as JSX
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+
+  const backendUrl =
+    mode === 'development'
+      ? 'http://localhost:5000'
+      : env.VITE_BACKEND_URL
+
+  console.log(`✅ Using backend URL: ${backendUrl}`)
+
+  return {
+    plugins: [react(), tailwindcss()],
+    esbuild: {
+      loader: 'jsx',
+      include: /src\/.*\.jsx?$/,
+      exclude: [],
+    },
+    server: {
+      proxy: {
+        '/api': {
+          target: backendUrl,
+          changeOrigin: true,
+          secure: true,
+        },
       },
     },
-  },
+    optimizeDeps: {
+      esbuildOptions: {
+        loader: {
+          '.js': 'jsx',
+        },
+      },
+    },
+  }
 })
