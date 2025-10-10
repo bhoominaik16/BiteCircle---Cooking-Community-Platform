@@ -16,30 +16,33 @@ const initialState = {
 };
 
 // Async Thunk to fetch all dashboard data
-export const fetchDashboardData = createAsyncThunk('dashboard/fetchData', async (_, { rejectWithValue, getState }) => {
+export const fetchDashboardData = createAsyncThunk(
+  'dashboard/fetchData',
+  async (_, { rejectWithValue, getState }) => {
     try {
-        const token = getState().auth.user.token;
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-        
-        // Fetch dashboard data
-        const dashboardResponse = await axios.get(`${API_URL}/dashboard`, config);
-        
-        // Fetch recent activities from the new endpoint
-        const activityResponse = await axios.get(ACTIVITY_URL, config);
-        
-        return {
-            ...dashboardResponse.data,
-            recentActivities: activityResponse.data,
-        };
-    } catch (error) {
-        return rejectWithValue(error.response?.data?.message || error.message);
-    }
-});
+      const user = getState().auth.user;
+      if (!user || !user.token) {
+        return rejectWithValue('User not authenticated');
+      }
+      const token = user.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
 
+      const dashboardResponse = await axios.get(`${API_URL}/dashboard`, config);
+      const activityResponse = await axios.get(ACTIVITY_URL, config);
+
+      return {
+        ...dashboardResponse.data,
+        recentActivities: activityResponse.data,
+      };
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
 const dashboardSlice = createSlice({
     name: 'dashboard',
     initialState,
