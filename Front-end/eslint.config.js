@@ -26,4 +26,11 @@ export default defineConfig([
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
   },
+  // 👇 Add this override for Node-based files
+  {
+    files: ['vite.config.js', 'vite.config.mjs'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ])

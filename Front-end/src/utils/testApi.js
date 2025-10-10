@@ -1,5 +1,6 @@
 // Front-end/src/utils/testApi.js
 import axios from 'axios';
+import { API_BASE_URL } from '../utils/config';
 
 /**
  * Test the AI Recipe suggestion API to diagnose issues
@@ -12,7 +13,7 @@ export const testAIRecipeAPI = async (query) => {
         // Test if server is responding
         console.log('Testing server connectivity...');
         
-        const serverTest = await axios.get('http://localhost:5000/api/recipes', { 
+        const serverTest = await axios.get(`${API_BASE_URL}/api/recipes`, { 
             timeout: 5000 
         }).catch(err => {
             throw new Error(`Server connectivity test failed: ${err.message}`);
@@ -24,7 +25,7 @@ export const testAIRecipeAPI = async (query) => {
         console.log('Testing AI recipe endpoint with query:', query);
         
         const testQuery = query || 'pasta with tomatoes';
-        const aiTest = await axios.post('http://localhost:5000/api/recipes/ai-suggest', { 
+        const aiTest = await axios.post(`${API_BASE_URL}/api/recipes/ai-suggest`, { 
             query: testQuery, 
             ingredients: ['tomatoes', 'pasta'],
             dietaryPreferences: []

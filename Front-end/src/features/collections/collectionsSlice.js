@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { API_BASE_URL } from '../../utils/config';
 import axios from 'axios';
 
 const initialState = {
@@ -16,7 +17,7 @@ export const createCollection = createAsyncThunk('collections/createCollection',
                 Authorization: `Bearer ${token}`,
             },
         };
-        const response = await axios.post('http://localhost:5000/api/users/collection', { name }, config);
+        const response = await axios.post(`${API_BASE_URL}/api/users/collection`, { name }, config);
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response.data.message || error.message);
@@ -34,7 +35,7 @@ export const addRecipeToCollection = createAsyncThunk(
                     Authorization: `Bearer ${token}`,
                 },
             };
-            const response = await axios.put(`http://localhost:5000/api/users/collection/${collectionId}`, { recipeId }, config);
+            const response = await axios.put(`${API_BASE_URL}/api/users/collection/${collectionId}`, { recipeId }, config);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data.message || error.message);

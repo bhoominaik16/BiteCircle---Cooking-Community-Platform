@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { API_BASE_URL } from '../../utils/config';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/users';
-const ACTIVITY_URL = 'http://localhost:5000/api/activity';
+const API_URL = `${API_BASE_URL}/api/users`;
+const ACTIVITY_URL = `${API_BASE_URL}/api/activity`;
 
 const initialState = {
     stats: {},

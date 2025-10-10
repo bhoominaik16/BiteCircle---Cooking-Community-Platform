@@ -11,3 +11,8 @@ export const UNSPLASH_ACCESS_KEY = import.meta.env.VITE_UNSPLASH_ACCESS_KEY ||
   // Please replace this with your actual Unsplash API key
   // You can get one at https://unsplash.com/developers
   'YOUR_UNSPLASH_ACCESS_KEY';
+
+export const API_BASE_URL =
+  import.meta.env.MODE === 'development'
+    ? 'http://localhost:5000' // 👈 local backend when running `npm run dev`
+    : import.meta.env.VITE_BACKEND_URL; // 👈 deployed backend when built

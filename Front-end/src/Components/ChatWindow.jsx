@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { IoIosSend } from 'react-icons/io';
 import { ImCancelCircle } from 'react-icons/im';
+import { API_BASE_URL } from '../utils/config';
 
 const ChatWindow = ({ partner, onClose }) => {
     const [messages, setMessages] = useState([]);
@@ -27,7 +28,7 @@ const ChatWindow = ({ partner, onClose }) => {
                 };
                 // CORRECTED API ENDPOINT: Now points to /api/chats
                 const { data } = await axios.post(
-                    'http://localhost:5000/api/chats/',
+                    `${API_BASE_URL}/api/chats/'`,
                     { partnerId: partner._id },
                     config
                 );

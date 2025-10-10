@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { fetchRecipeImage } from '../utils/unsplashService';
 import { getFoodPlaceholder } from '../utils/placeholderImages';
+import { API_BASE_URL } from '../utils/config';
 
 const RecipeSuggestionCard = ({ recipe }) => {
     const navigate = useNavigate();
@@ -408,7 +409,7 @@ const AIRecipeSuggest = () => {
                 console.log('Sending request to AI API...');
                 const startTime = Date.now();
                 
-                res = await axios.post('http://localhost:5000/api/recipes/ai-suggest', { 
+                res = await axios.post(`${API_BASE_URL}/api/recipes/ai-suggest'`, { 
                     query, 
                     ingredients: ingredientsArray,
                     dietaryPreferences: dietaryArray

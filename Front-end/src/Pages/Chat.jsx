@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ChatWindow from '../Components/ChatWindow';
 import { loadUser } from '../features/auth/authSlice';
+import { API_BASE_URL } from '../utils/config';
 
 const Chat = () => {
     const { isLoggedIn, user } = useSelector(state => state.auth);
@@ -42,7 +43,7 @@ const Chat = () => {
                         Authorization: `Bearer ${user.token}`,
                     },
                 };
-                const { data } = await axios.get('http://localhost:5000/api/chats', config);
+                const { data } = await axios.get(`${API_BASE_URL}/api/chats`, config);
                 const filteredChats = data.filter(chat => chat.messages && chat.messages.length > 0);
                 setChats(filteredChats);
 

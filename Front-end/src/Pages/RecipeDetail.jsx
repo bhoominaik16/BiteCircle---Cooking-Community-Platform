@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useSocket } from '../context/SocketContext';
 import { FaRegCommentDots } from 'react-icons/fa';
 import ChatWindow from '../Components/ChatWindow';
+import { API_BASE_URL } from '../utils/config';
 
 import {
     getRecipeById,
@@ -416,13 +417,13 @@ const RecipeDetail = () => {
                     {(recipe.imageUrl || recipe.videoUrl) ? (
                         recipe.imageUrl ? (
                             <img
-                                src={recipe.imageUrl.startsWith('http') ? recipe.imageUrl : `http://localhost:5000${recipe.imageUrl}`}
+                                src={recipe.imageUrl.startsWith('http') ? recipe.imageUrl : `${API_BASE_URL}/${recipe.imageUrl}`}
                                 alt={recipe.title || recipe.name}
                                 className="absolute top-0 left-0 w-full h-full object-cover"
                             />
                         ) : (
                             <video controls className='absolute top-0 left-0 w-full h-full object-cover'>
-                                <source src={`http://localhost:5000${recipe.videoUrl}`} />
+                                <source src={`${API_BASE_URL}/${recipe.videoUrl}`} />
                                 Your browser does not support the video tag.
                             </video>
                         )
@@ -451,7 +452,7 @@ const RecipeDetail = () => {
                                 ) : (
                                     <>
                                         {recipe.user?.profilePic && (
-                                            <img src={`http://localhost:5000${recipe.user.profilePic}`} alt={recipe.user.name} className="h-8 w-8 rounded-full mr-2 border border-orange-500" />
+                                            <img src={`${API_BASE_URL}/${recipe.user.profilePic}`} alt={recipe.user.name} className="h-8 w-8 rounded-full mr-2 border border-orange-500" />
                                         )}
                                         <span className="text-gray-700">by {authorName}</span>
                                         {showChatIcon && (
@@ -866,7 +867,7 @@ const RecipeDetail = () => {
                                                 <img
                                                     src={
                                                         comment.user?.profilePic
-                                                            ? `http://localhost:5000${comment.user.profilePic}`
+                                                            ? `${API_BASE_URL}/${comment.user.profilePic}`
                                                             : "/default-avatar.png"
                                                     }
                                                     alt={comment.user?.name || 'User'}

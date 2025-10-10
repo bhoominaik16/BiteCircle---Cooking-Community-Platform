@@ -2,9 +2,10 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 // Import the thunks from your recipesSlice.js
 import { likeRecipe, unlikeRecipe, saveRecipe } from '../features/recipes/recipesSlice';
+import { API_BASE_URL } from '../utils/config';
 
-const API_URL = 'http://localhost:5000/api/users';
-const ACTIVITY_URL = 'http://localhost:5000/api/activity';
+const API_URL = `${API_BASE_URL}/api/users`;
+const ACTIVITY_URL = `${API_BASE_URL}/api/activity`;
 
 const initialState = {
     stats: {},
