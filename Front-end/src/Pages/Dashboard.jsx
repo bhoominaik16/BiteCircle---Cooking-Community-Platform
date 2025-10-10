@@ -1,4 +1,3 @@
-// Front-end/src/pages/Dashboard.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,35 +8,40 @@ import RecipeCard from '../Components/RecipeCard';
 const Dashboard = () => {
     const dispatch = useDispatch();
     const { user } = useSelector(state => state.auth);
-    const { 
-        stats = {}, 
-        recentActivities = [], 
-        myCookbook = [], 
-        likedRecipes = [], 
-        collections = [], 
-        status, 
-        error 
+    const {
+        stats = {},
+        recentActivities = [],
+        myCookbook = [],
+        likedRecipes = [],
+        collections = [],
+        status,
+        error
     } = useSelector(state => state.dashboard);
-    
+
     const [activeTab, setActiveTab] = useState('overview');
     const [showCollectionModal, setShowCollectionModal] = useState(false);
     const [newCollectionName, setNewCollectionName] = useState('');
 
     useEffect(() => {
-        if (user) {
+        if (user && user.token) {
             dispatch(fetchDashboardData());
         }
     }, [dispatch, user]);
-    
+
     const handleCreateCollection = async (e) => {
         e.preventDefault();
         if (newCollectionName.trim()) {
             await dispatch(createCollection(newCollectionName));
             setShowCollectionModal(false);
             setNewCollectionName('');
-            // No need to alert, Redux will update the state
         }
     };
+
+    // Defensive: Ensure arrays
+    const safeCollections = Array.isArray(collections) ? collections : [];
+    const safeMyCookbook = Array.isArray(myCookbook) ? myCookbook : [];
+    const safeLikedRecipes = Array.isArray(likedRecipes) ? likedRecipes : [];
+    const safeRecentActivities = Array.isArray(recentActivities) ? recentActivities : [];
 
     if (!user) {
         return (
@@ -148,15 +152,15 @@ const Dashboard = () => {
                         <div>
                             <h3 className="text-lg font-medium text-gray-800 mb-4">Recent Activity</h3>
                             <ul className="divide-y divide-gray-200">
-                                {recentActivities.length > 0 ? (
-                                    recentActivities.map((activity, index) => (
+                                {safeRecentActivities.length > 0 ? (
+                                    safeRecentActivities.map((activity, index) => (
                                         <li key={index} className="py-3">
                                             <div className="flex space-x-3">
                                                 <div className="flex-1 space-y-1">
                                                     <div className="flex items-center justify-between">
                                                         <p className="text-sm text-gray-800">
                                                             <span className="font-medium">{activity.action}</span>{' '}
-                                                            <span className="text-orange-600">{activity.recipe}</span>
+                                                            <span className="text-orange-600">{activity.recipe && typeof activity.recipe === 'string' ? activity.recipe : ''}</span>
                                                         </p>
                                                         <p className="text-xs text-gray-500">{activity.time}</p>
                                                     </div>
@@ -175,9 +179,11 @@ const Dashboard = () => {
                         <div>
                             <h3 className="text-lg font-medium text-gray-800 mb-4">Your Uploaded Recipes</h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {myCookbook.length > 0 ? (
-                                    myCookbook.map(recipe => (
-                                        <RecipeCard key={recipe._id} recipe={recipe} />
+                                {safeMyCookbook.length > 0 ? (
+                                    safeMyCookbook.map(recipe => (
+                                        recipe && typeof recipe === 'object' && recipe._id ? (
+                                            <RecipeCard key={recipe._id} recipe={recipe} />
+                                        ) : null
                                     ))
                                 ) : (
                                     <p className="text-gray-600 col-span-full">You haven't uploaded any recipes yet.</p>
@@ -189,15 +195,17 @@ const Dashboard = () => {
                     {activeTab === 'collections' && (
                         <div>
                             <h3 className="text-lg font-medium text-gray-800 mb-4">Your Collections</h3>
-                            {collections.length > 0 ? (
+                            {safeCollections.length > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {collections.map(collection => (
-                                        <Link key={collection._id} to={`/collections/${collection._id}`} className="block border border-gray-200 rounded-lg p-6 text-center hover:shadow-md transition-shadow">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-orange-500 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
-                                            </svg>
-                                            <p className="font-medium text-gray-800">{collection.name}</p>
-                                        </Link>
+                                    {safeCollections.map(collection => (
+                                        collection && typeof collection === 'object' && collection._id ? (
+                                            <Link key={collection._id} to={`/collections/${collection._id}`} className="block border border-gray-200 rounded-lg p-6 text-center hover:shadow-md transition-shadow">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-orange-500 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+                                                </svg>
+                                                <p className="font-medium text-gray-800">{collection.name}</p>
+                                            </Link>
+                                        ) : null
                                     ))}
                                 </div>
                             ) : (
@@ -213,9 +221,11 @@ const Dashboard = () => {
                         <div>
                             <h3 className="text-lg font-medium text-gray-800 mb-4">Recipes You've Liked</h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {likedRecipes.length > 0 ? (
-                                    likedRecipes.map(likedItem => (
-                                        <RecipeCard key={likedItem.recipe._id} recipe={likedItem.recipe} />
+                                {safeLikedRecipes.length > 0 ? (
+                                    safeLikedRecipes.map(likedItem => (
+                                        likedItem && likedItem.recipe && likedItem.recipe._id ? (
+                                            <RecipeCard key={likedItem.recipe._id} recipe={likedItem.recipe} />
+                                        ) : null
                                     ))
                                 ) : (
                                     <p className="text-gray-600 col-span-full">You haven't liked any recipes yet.</p>

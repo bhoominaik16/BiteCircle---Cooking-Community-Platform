@@ -28,7 +28,7 @@ const ChatWindow = ({ partner, onClose }) => {
                 };
                 // CORRECTED API ENDPOINT: Now points to /api/chats
                 const { data } = await axios.post(
-                    `${API_BASE_URL}/api/chats/'`,
+                    `${API_BASE_URL}/api/chats/`,
                     { partnerId: partner._id },
                     config
                 );
