@@ -143,12 +143,3 @@ python automation.py
 * Multi-service orchestration using Docker Compose
 * CI automation using GitHub Actions
 * Deployment scripting using Python
-
----
-
-If you'd like, I can also enhance this with:
-
-* GitHub badges
-* Architecture diagram section
-* Deployment flow explanation
-* Portfolio-optimized version for recruiters
