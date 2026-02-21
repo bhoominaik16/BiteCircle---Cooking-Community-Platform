@@ -18,6 +18,7 @@ The project is containerized using Docker and includes CI automation using GitHu
 🛠 Tech Stack
 Frontend : 
 React
+
 Redux Toolkit
 Vite
 Tailwind CSS
