@@ -1,0 +1,42 @@
+name: CI Pipeline - Recipe Share App
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Backend Install
+      - name: Install Backend Dependencies
+        run: |
+          cd server
+          npm install
+
+      # Frontend Install
+      - name: Install Frontend Dependencies
+        run: |
+          cd Front-end
+          npm install
+
+      # Build Frontend
+      - name: Build Frontend
+        run: |
+          cd Front-end
+          npm run build
+
+      # Docker Build Test
+      - name: Build Docker Containers
+        run: docker compose build
